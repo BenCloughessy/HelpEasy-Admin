@@ -12,11 +12,13 @@ function App() {
   // Controlling form input for submission
   const [shelterName, setShelterName] = useState('')
   const [shelterAddress, setShelterAddress] = useState('')
+  const [shelterCity, setShelterCity] = useState('')
+  const [shelterState, setShelterState] = useState('')
   const [shelterPhone, setShelterPhone] = useState('')
   const [shelterUrl, setShelterUrl] = useState('')
 
   // Event handler for submission of controlled form. POST to /shelters and DELETE from /requestforms
-  const submitForm = async(shelterName, shelterAddress, shelterPhone, shelterUrl, currentForm) => {
+  const submitForm = async(shelterName, shelterAddress, shelterPhone, shelterUrl, shelterCity, shelterState, currentForm) => {
     const data = {shelterName, shelterAddress, shelterPhone, shelterUrl}
     console.log(data)
     setModal(!modal);
@@ -32,7 +34,9 @@ function App() {
             name: shelterName,
             url: shelterUrl,
             phone: shelterPhone,
-            address: shelterAddress
+            address: shelterAddress,
+            city: shelterCity,
+            state: shelterState
         })
     }).then((response) => {
       if (!response.ok) {
@@ -45,7 +49,7 @@ function App() {
             'Content-Type': 'application/json',
         }
     }).then(() => {
-      requestFormSearch()
+      requestFormSearch() // refreshing current request forms after delete
     })
       }
     }).catch((error) => {
@@ -109,6 +113,16 @@ function App() {
                     onChange={(e) => setShelterAddress(e.target.value)}
                 />
                 <Input 
+                    placeholder="Shelter City" 
+                    value={shelterCity}
+                    onChange={(e) => setShelterCity(e.target.value)}
+                />
+                <Input 
+                    placeholder="Shelter State" 
+                    value={shelterState}
+                    onChange={(e) => setShelterState(e.target.value)}
+                />
+                <Input 
                     placeholder="Shelter Phone"
                     value={shelterPhone}
                     onChange={(e) => setShelterPhone(e.target.value)}
@@ -121,7 +135,7 @@ function App() {
         </Card>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={() => submitForm(shelterName, shelterAddress, shelterPhone, shelterUrl, currentForm)}>
+        <Button color="primary" onClick={() => submitForm(shelterName, shelterAddress, shelterPhone, shelterUrl, shelterCity, shelterState, currentForm)}>
           Do Something
         </Button>{' '}
         <Button color="secondary" onClick={toggleModal}>
