@@ -17,13 +17,19 @@ function App() {
   const [shelterPhone, setShelterPhone] = useState('')
   const [shelterUrl, setShelterUrl] = useState('')
 
-  // Event handler for submission of controlled form. POST to /shelters and DELETE from /requestforms
+  // Event handler for submission of controlled form. Call TomTom Geocoding API to get coords, then POST to /shelters, then DELETE from /requestforms
   const submitForm = async(shelterName, shelterAddress, shelterPhone, shelterUrl, shelterCity, shelterState, currentForm) => {
-    const data = {shelterName, shelterAddress, shelterPhone, shelterUrl}
-    console.log(data)
     setModal(!modal);
 
-    // Send a POST request to server, if successful, DELETE matching request form
+    // Call tomtom geocoding api to cobvert address into latitude and longitude 
+    const apiKey = 'aWYBPDg8q4jsUHu3EViMzBg3kJi91gaV'
+    let url = `https://api.tomtom.com/search/2/geocode/${shelterAddress}, ${shelterCity}, ${shelterState}.json?key=${apiKey}`
+    
+    const coords = await fetch(url, {
+      method: 'GET',
+      }).then((response) => response.json())
+
+    // Send a POST request to /shelters, if successful, DELETE matching request form
     fetch('http://192.168.50.244:3001/shelters', {
         method: 'POST',
         headers: {
@@ -36,7 +42,9 @@ function App() {
             phone: shelterPhone,
             address: shelterAddress,
             city: shelterCity,
-            state: shelterState
+            state: shelterState,
+            longitude: coords.results[0].position.lon, // longitude from call to TomTom geocoding api
+            latitude: coords.results[0].position.lat   // latitude from call to TomTom geocoding api
         })
     }).then((response) => {
       if (!response.ok) {
@@ -136,7 +144,7 @@ function App() {
       </ModalBody>
       <ModalFooter>
         <Button color="primary" onClick={() => submitForm(shelterName, shelterAddress, shelterPhone, shelterUrl, shelterCity, shelterState, currentForm)}>
-          Do Something
+          Submit
         </Button>{' '}
         <Button color="secondary" onClick={toggleModal}>
           Cancel
