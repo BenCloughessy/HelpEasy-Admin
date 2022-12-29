@@ -43,8 +43,10 @@ function App() {
             address: shelterAddress,
             city: shelterCity,
             state: shelterState,
-            longitude: coords.results[0].position.lon, // longitude from call to TomTom geocoding api
-            latitude: coords.results[0].position.lat   // latitude from call to TomTom geocoding api
+            location: { // send user coords as GeoJSON object for geospatial query on serverside
+              type: "Point",
+              coordinates: [coords.results[0].position.lon, coords.results[0].position.lat]
+            }
         })
     }).then((response) => {
       if (!response.ok) {
