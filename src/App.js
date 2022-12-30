@@ -37,16 +37,22 @@ function App() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: shelterName,
-            url: shelterUrl,
-            phone: shelterPhone,
-            address: shelterAddress,
-            city: shelterCity,
-            state: shelterState,
+            poi: {
+              name: shelterName,
+              url: shelterUrl,
+              phone: shelterPhone
+            },
+            address: {
+              street: shelterAddress,
+              city: shelterCity,
+              state: shelterState,
+              freeformAddress: `${shelterAddress}, ${shelterCity}, ${shelterState}`
+            },
             location: { // send user coords as GeoJSON object for geospatial query on serverside
               type: "Point",
               coordinates: [coords.results[0].position.lon, coords.results[0].position.lat]
-            }
+            },
+            dist: 0
         })
     }).then((response) => {
       if (!response.ok) {
