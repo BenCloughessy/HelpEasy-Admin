@@ -1,15 +1,11 @@
-import { GoogleLogin } from '@react-oauth/google';
+import FirebaseAuth from "./firebaseAuth";
 
 const Login = () => {
     return (
-        <GoogleLogin
-        onSuccess={credentialResponse => {
-          console.log(credentialResponse);
-        }}
-        onError={() => {
-          console.log('Login Failed');
-        }}
-      />
+      <div>
+      {/* Render the FirebaseAuth component */}
+      <FirebaseAuth />
+    </div>
     )
 }
 
